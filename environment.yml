@@ -1,0 +1,17 @@
+name: stpipeline
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7.10
+  - cython=0.29.22
+  - star=2.7.8a
+  - samtools=1.6 # Downgrade to avoid dyld bug
+  - pandas=1.2.2
+  - htseq>=0.7.1
+  - pysam=0.15.4 # Set explicit version to fix bug
+  - pip
+  - pip:
+    - taggd>=0.3.6
+  - seaborn=0.11.1
