@@ -66,6 +66,7 @@ class Pipeline():
         self.expName = None
         self.htseq_mode = "intersection-nonempty"
         self.htseq_no_ambiguous = False
+        self.htseq_idattr = "gene_id"
         self.qual64 = False
         self.contaminant_index = None
         self.fastq_fw = None
@@ -553,6 +554,11 @@ class Pipeline():
                             action="store_true",
                             default=False,
                             help="When using htseq-count discard reads annotating ambiguous genes (default False)")
+        parser.add_argument("--htseq-idattr",
+                            type=str,
+                            default="gene_id",
+                            help="GTF attribute to be used as feature ID for "
+                                 "htseq-count (default gene_id)")
         parser.add_argument('--strandness',
                             default="yes",
                             type=str,
@@ -681,6 +687,7 @@ class Pipeline():
         self.expName = options.expName
         self.htseq_mode = options.htseq_mode
         self.htseq_no_ambiguous = options.htseq_no_ambiguous
+        self.htseq_idattr = options.htseq_idattr
         self.qual64 = options.qual_64
         if options.contaminant_index is not None:
             self.contaminant_index = os.path.abspath(options.contaminant_index)
@@ -1105,6 +1112,7 @@ class Pipeline():
                                   FILENAMES_DISCARDED["annotated_discarded"] if self.keep_discarded_files else None,
                                   self.htseq_mode, self.strandness,
                                   self.htseq_no_ambiguous,
+                                  self.htseq_idattr,
                                   self.include_non_annotated)
                 except Exception:
                     raise

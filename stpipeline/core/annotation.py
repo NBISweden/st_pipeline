@@ -198,6 +198,7 @@ def annotateReads(mappedReads,
                   mode,
                   strandness,
                   htseq_no_ambiguous,
+                  htseq_idattr,
                   include_non_annotated):
     """
     Annotates a file with mapped reads (BAM) using a modified 
@@ -240,7 +241,7 @@ def annotateReads(mappedReads,
                                             strandness,  # Strand yes/no/reverse
                                             mode,  # intersection_nonempty, union, intersection_strict
                                             "exon",  # feature type in GFF
-                                            "gene_id",  # gene_id or gene_name
+                                            htseq_idattr,  # id attribute (e.g. gene_id or gene_name)
                                             0,  # Min quality score
                                             outputFile,
                                             include_non_annotated,
