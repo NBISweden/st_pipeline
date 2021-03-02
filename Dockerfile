@@ -22,6 +22,10 @@ RUN conda env update -n base -f environment.yml && conda clean -a
 COPY MANIFEST.in setup* requirements.txt ./
 COPY stpipeline stpipeline
 COPY scripts scripts
-RUN python setup.py build && python setup.py install
+RUN python setup.py build && python setup.py clean --all install
+# Run tests
+COPY tests tests
+COPY testrun.py .
+RUN python setup.py test && python -m unittest testrun.py
 
 ENTRYPOINT ["st_pipeline_run.py"]
