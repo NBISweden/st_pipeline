@@ -26,6 +26,6 @@ RUN python setup.py build && python setup.py clean --all install
 # Run tests
 COPY tests tests
 COPY testrun.py .
-RUN python setup.py test && python -m unittest testrun.py
+RUN python setup.py test
 
 ENTRYPOINT ["st_pipeline_run.py"]
