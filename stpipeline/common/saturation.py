@@ -17,6 +17,7 @@ from stpipeline.common.utils import safeRemove
 def computeSaturation(nreads, 
                       annotated_reads,
                       gff_filename,
+                      idattr,
                       umi_cluster_algorithm,
                       umi_allowed_mismatches,
                       umi_counting_offset,
@@ -32,6 +33,8 @@ def computeSaturation(nreads,
     to the log file.
     :param nreads: the number of reads present in the annotated_reads file
     :param annotated_reads: path to a BAM file with the annotated reads
+    :param gff_filename: path to GFF annotation file
+    :param idattr: attribute to be used as feature ID
     :param umi_cluster_algorithm: the clustering algorithm to cluster UMIs
     :param umi_allowed_mismatches: the number of miss matches allowed to remove
                                   duplicates by UMIs
@@ -132,6 +135,7 @@ def computeSaturation(nreads,
             createDataset(input_file,
                           stats,
                           gff_filename,
+                          idattr,
                           umi_cluster_algorithm,
                           umi_allowed_mismatches,
                           umi_counting_offset,
