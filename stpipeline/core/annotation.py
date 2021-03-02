@@ -107,8 +107,7 @@ def count_reads_in_features(sam_filename,
                 try:
                     feature_id = f.attr[id_attribute]
                 except KeyError:
-                    raise ValueError("Feature %s does not contain a '%s' attribute" \
-                                     % (f.name, id_attribute))
+                    raise ValueError(f"Feature {f.name} does not contain a {id_attribute} attribute")
                 if stranded != "no" and f.iv.strand == ".":
                     raise ValueError("Feature %s at %s does not have strand information but you are " \
                                      "running htseq-count in stranded mode. Use '--stranded=no'." %
