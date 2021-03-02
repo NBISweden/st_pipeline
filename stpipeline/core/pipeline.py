@@ -751,8 +751,8 @@ class Pipeline():
         attributes_filtered = [a for a in attributes if not (a[0].startswith('__') and a[0].endswith('__'))]
         # Assign general parameters to the qa_stats object
         qa_stats.input_parameters = attributes_filtered
-        qa_stats.annotation_tool = "htseq-count {}".format(getHTSeqCountVersion())
-        qa_stats.demultiplex_tool = "Taggd {}".format(getTaggdCountVersion())
+        qa_stats.annotation_tool = "htseq-count {}".format(getVersion("HTSEQ"))
+        qa_stats.demultiplex_tool = "Taggd {}".format(getVersion("taggd"))
         qa_stats.pipeline_version = version_number
         qa_stats.mapper_tool = getSTARVersion()
 
@@ -1129,6 +1129,7 @@ class Pipeline():
                 computeSaturation(reads,
                                   FILENAMES["annotated"],
                                   self.ref_annotation,
+                                  self.htseq_idattr,
                                   self.umi_cluster_algorithm,
                                   self.umi_allowed_mismatches,
                                   self.umi_counting_offset,
@@ -1148,6 +1149,7 @@ class Pipeline():
                 createDataset(FILENAMES["annotated"],
                               qa_stats,  # Passed as reference
                               self.ref_annotation,
+                              self.htseq_idattr,
                               self.umi_cluster_algorithm,
                               self.umi_allowed_mismatches,
                               self.umi_counting_offset,
