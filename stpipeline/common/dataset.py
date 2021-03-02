@@ -56,6 +56,7 @@ def computeUniqueUMIs(transcripts, umi_counting_offset, umi_allowed_mismatches, 
 def createDataset(input_file,
                   qa_stats,
                   gff_filename=None,
+                  idattr="gene_id",
                   umi_cluster_algorithm="hierarchical",
                   umi_allowed_mismatches=1,
                   umi_counting_offset=250,
@@ -73,6 +74,7 @@ def createDataset(input_file,
     :param input_file: the file with the annotated-demultiplexed records in BAM format
     :param qa_stats: the Stats object to add some stats (THIS IS PASSED BY REFERENCE)
     :param gff_filename: the annotation reference file
+    :param idattr: GTF attribute to be used as feature ID
     :param umi_cluster_algorithm: the clustering algorithm to cluster UMIs
     :param umi_allowed_mismatches: the number of miss matches allowed to remove
                                   duplicates by UMIs
@@ -132,7 +134,7 @@ def createDataset(input_file,
     list_indexes = list()   
 
     # Parse unique events to generate the unique counts and the BED file
-    unique_events = parse_unique_events(input_file, gff_filename)
+    unique_events = parse_unique_events(input_file, gff_filename, idattr)
     with open(os.path.join(output_folder, filenameReadsBED), "w") as reads_handler:
         # this is the generator returning a dictionary with spots for each gene
         for gene, spots in unique_events:
