@@ -118,47 +118,24 @@ def getSTARVersion():
                                 stderr=subprocess.PIPE,
                                 shell=False, close_fds=True)
         (stdout, errmsg) = proc.communicate()
-        version = stdout
+        version = stdout.decode()
     except Exception:
         version = "Not available"
     return version.rstrip()
 
 
-def getTaggdCountVersion():
+def getVersion(prog):
     """
-    Tries to find the Taggd binary
-    and makes a system call to get its
-    version and return it
+    Tries to find the version of a program and return it
     """
     version = ""
     try:
-        proc = subprocess.Popen(["pip", "show", "taggd"],
+        proc = subprocess.Popen(["pip", "show", prog],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 shell=False, close_fds=True)
         (stdout, errmsg) = proc.communicate()
-        for line in stdout.split("\n"):
-            if line.find("Version:") != -1:
-                version = str(line.split()[-1])
-    except Exception:
-        version = "Not available"
-    return version.rstrip()
-
-
-def getHTSeqCountVersion():
-    """
-    Tries to find the HTSeqCount binary
-    and makes a system call to get its
-    version and return it
-    """
-    version = ""
-    try:
-        proc = subprocess.Popen(["pip", "show", "htseq"],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                shell=False, close_fds=True)
-        (stdout, errmsg) = proc.communicate()
-        for line in stdout.split("\n"):
+        for line in stdout.decode().split("\n"):
             if line.find("Version:") != -1:
                 version = str(line.split()[-1])
     except Exception:
