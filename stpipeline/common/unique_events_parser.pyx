@@ -21,7 +21,7 @@ class geneBuffer():
     of genes, spots coordinates and transcripts
     it assumes the transcripts to be added in a coordinate ordered fashion
     """
-    def __init__(self, gff_filename):
+    def __init__(self, gff_filename, idattr):
 
         # defining variables
         cdef dict buffer = dict()
@@ -32,9 +32,9 @@ class geneBuffer():
         self.buffer = buffer
         self.last_position = last_position
         self.last_chromosome = last_chromosome
-        self.__compute_gene_end_coordinates(gff_filename)
+        self.__compute_gene_end_coordinates(gff_filename, idattr)
         
-    def __compute_gene_end_coordinates(self, gff_filename):
+    def __compute_gene_end_coordinates(self, gff_filename, idattr="gene_id"):
         """
         function that reads the end coordinate and chromosomes of all the genes present
         in the GFF file and save them as values of a dictionary with the gene ID as key
@@ -53,14 +53,14 @@ class geneBuffer():
         for line in gff_lines(gff_filename):
             seqname = line['seqname']
             end = int(line['end'])
-            gene_id = line['gene_id']
+            gene_id = line[idattr]
             # save gene_id and rightmost genomic coordinate of each gene to dictionary
             try:
                 if gene_id[0] == '"' and gene_id[-1] == '"': 
                     gene_id = gene_id[1:-1]
             except KeyError:
                 raise ValueError(
-                    'The gene_id attribute is missing in the annotation file ({0})\n'.format(self.gff_filename)
+                    f'The {idattr} attribute is missing in the annotation file {self.gff_filename}\n'
                     )
             try:
                 if end > gene_end_coordinates[gene_id][1]:
@@ -155,7 +155,7 @@ class geneBuffer():
                 # Remove the gene from the buffer
                 del self.buffer[gene]
                 
-def parse_unique_events(input_file, gff_filename=None):
+def parse_unique_events(input_file, gff_filename=None, idattr="gene_id"):
     """
     This function parses the transcripts present in the filename given as input.
     It expects a coordinate sorted BAM file where the spot coordinates,
@@ -163,9 +163,10 @@ def parse_unique_events(input_file, gff_filename=None):
     Will yield a dictionary per gene with a spot coordinate tuple as keys
     foreach gene yield: [spot] -> [(chrom, start, end, clear_name, mapping_quality, strand, umi), ... ]
     :param filename: the input file containing the annotated BAM records
+    :param idattr: GTF/GFF attribute to be used as feature ID
     :param gff_filename: the gff file containing the gene coordinates (optional)
     """
-    cdef object genes_buffer = geneBuffer(gff_filename) if gff_filename is not None else None
+    cdef object genes_buffer = geneBuffer(gff_filename, idattr) if gff_filename is not None else None
     cdef object genes_dict = dict()
     cdef object rec
     cdef str clear_name
