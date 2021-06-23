@@ -112,6 +112,7 @@ class Pipeline():
         self.disable_umi = False
         self.disable_barcode = False
         self.transcriptome = False
+        self.transcriptome_genecounts = False
         self.saturation_points = None
 
     def clean_filenames(self):
@@ -661,6 +662,13 @@ class Pipeline():
                             action="store_true",
                             help="Use this flag if you want to use transcriptome instead of a genome, the gene tag will be "
                                  "obtained from the transcriptome file")
+        parser.add_argument("--transcriptome-genecounts",
+                            default=False,
+                            action="store_true",
+                            help="Use this flag if you want to count reads for genes "
+                                 "instead of transcripts. NB! works only if transcriptome "
+                                 "has been created by trinity (i.e., with a suffix, e.g., "
+                                 "'_i1' that indicate transcript of a gene)."
         parser.add_argument('--version', action='version', version='%(prog)s ' + str(version_number))
         return parser
 
@@ -744,6 +752,7 @@ class Pipeline():
         self.transcriptome = options.transcriptome
         self.disable_umi = options.disable_umi
         self.transcriptome = options.transcriptome
+        self.transcriptome_genecounts = options.transcriptome_genecounts
         if options.saturation_points is not None:
             self.saturation_points = [int(p) for p in options.saturation_points]
         # Assign class parameters to the QA stats object
@@ -1099,6 +1108,8 @@ class Pipeline():
                 for rec in infile.fetch(until_eof=True):
                     # NOTE chrom may have to be trimmed to 250 characters max
                     chrom = infile.getrname(rec.reference_id).split()[0]
+                    if self.transcriptome_genecounts:
+                        chrom = re.sub("_i\d+\Z", "", chrom)
                     rec.set_tag("XF", chrom, "Z")
                     outfile.write(rec)
                 infile.close()
